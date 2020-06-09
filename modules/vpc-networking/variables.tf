@@ -1,5 +1,3 @@
-# Input variable definitions
-
 variable "vpc_region" {
   description = "Region of VPC"
   type        = string

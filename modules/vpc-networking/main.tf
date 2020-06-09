@@ -13,7 +13,6 @@ resource "aws_subnet" "private-example-subnets" {
   count = length(var.vpc_azs)
   vpc_id     = aws_vpc.example-vpc.id
   cidr_block = element(var.vpc_private_subnets, count.index)
-  #availability_zone = element(var.vpc_azs, count.index)
 
   tags = {
     Name = "private-example-subnets"
@@ -24,7 +23,6 @@ resource "aws_subnet" "public-example-subnets" {
   count = length(var.vpc_azs)
   vpc_id     = aws_vpc.example-vpc.id
   cidr_block = element(var.vpc_public_subnets, count.index)
-  #availability_zone = element(var.vpc_azs, count.index)
 
   tags = {
     Name = "public-example-subnets"
@@ -52,11 +50,7 @@ resource "aws_route_table_association" "example-rt-association" {
   route_table_id = aws_route_table.example-public_rt.id
 }
 
-resource "aws_nat_gateway" "example-ngw" {
-  # count = length(aws_subnet.public-example-subnets)
-  # allocation_id = aws_eip.nat.id
-  # subnet_id     = aws_subnet.public-example-subnets[count.index].id
-  
+resource "aws_nat_gateway" "example-ngw" {  
   count = length(aws_subnet.public-example-subnets)
   allocation_id = element(aws_eip.nat.*.id,count.index)
   subnet_id = aws_subnet.public-example-subnets[count.index].id
